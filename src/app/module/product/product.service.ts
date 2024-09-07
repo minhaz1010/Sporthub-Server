@@ -14,15 +14,24 @@ const createProductInDatabase = async (payload: Partial<IProduct>) => {
   return result;
 };
 
-const getAllProductsFromDatabase = async() =>{
+const getAllProductsFromDatabase = async () => {
   const result = await Product.find();
-  if(result.length===0){
-    throw new AppError(httpStatus.BAD_REQUEST,'Sorry No Product Found')
+  if (result.length === 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, " No Product Found");
   }
-  return result
-}
+  return result;
+};
+
+const getSingleProductBySlug = async (slug: string) => {
+  const result = await Product.findOne({ slug: slug });
+  if (!result) {
+    throw new AppError(httpStatus.BAD_REQUEST, " No Product Found");
+  }
+  return result;
+};
 
 export const ProductService = {
   createProductInDatabase,
-  getAllProductsFromDatabase
+  getAllProductsFromDatabase,
+  getSingleProductBySlug,
 };
