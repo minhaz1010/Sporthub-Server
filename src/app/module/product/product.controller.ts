@@ -14,7 +14,7 @@ const createProduct = catchAsyncErrors(async (req, res) => {
 });
 
 const getAllProduct = catchAsyncErrors(async (req, res) => {
-  const result = await ProductService.getAllProductsFromDatabase();
+  const result = await ProductService.getAllProductsFromDatabase(req.query);
   sendResponse(res, {
     success: true,
     message: "Product Retrieved Successfully",

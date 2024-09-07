@@ -3,6 +3,7 @@ import slugify from "slugify";
 import { Product } from "./product.schema";
 import AppError from "../../errors/appError";
 import httpStatus from "http-status";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createProductInDatabase = async (payload: Partial<IProduct>) => {
   const slug = slugify(`${payload.name}${payload.category}` as string, "-");
@@ -14,8 +15,15 @@ const createProductInDatabase = async (payload: Partial<IProduct>) => {
   return result;
 };
 
-const getAllProductsFromDatabase = async () => {
-  const result = await Product.find();
+const getAllProductsFromDatabase = async (query: Record<string, unknown>) => {
+  const productQuery = new QueryBuilder(Product.find(), query)
+    .search(["name"])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await productQuery.modelQuery;
   if (result.length === 0) {
     throw new AppError(httpStatus.BAD_REQUEST, " No Product Found");
   }
