@@ -19,6 +19,9 @@ const createProductValidationSchema = z.object({
   }),
 });
 
+const updateProductValidationSchema = createProductValidationSchema.deepPartial();
+
 export const ProductValidation = {
   createProductValidationSchema,
+  updateProductValidationSchema
 };
