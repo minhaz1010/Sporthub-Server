@@ -30,8 +30,19 @@ const getSingleProductBySlug = async (slug: string) => {
   return result;
 };
 
+const updateSingleProductBySlug = async (
+  slug: string,
+  payload: Partial<IProduct>,
+) => {
+  const result = await Product.findOneAndUpdate({ slug: slug }, payload, {
+    new: true,
+  });
+  return result;
+};
+
 export const ProductService = {
   createProductInDatabase,
   getAllProductsFromDatabase,
   getSingleProductBySlug,
+  updateSingleProductBySlug,
 };

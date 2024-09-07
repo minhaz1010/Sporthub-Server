@@ -14,4 +14,10 @@ router.get("/", ProductController.getAllProduct);
 
 router.get("/:slug", ProductController.getSingleProductBySlug);
 
+router.patch(
+  "/:slug",
+  validateRequest(ProductValidation.updateProductValidationSchema),
+  ProductController.updateSingleProductBySlug,
+);
+
 export const ProductRoute = router;

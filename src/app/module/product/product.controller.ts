@@ -33,8 +33,22 @@ const getSingleProductBySlug = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const updateSingleProductBySlug = catchAsyncErrors(async (req, res) => {
+  const result = await ProductService.updateSingleProductBySlug(
+    req.params.slug,
+    req.body,
+  );
+  sendResponse(res, {
+    success: true,
+    message: "Product Updated Successfully",
+    result,
+    statusCode: httpStatus.OK,
+  });
+});
+
 export const ProductController = {
   createProduct,
   getAllProduct,
   getSingleProductBySlug,
+  updateSingleProductBySlug,
 };
