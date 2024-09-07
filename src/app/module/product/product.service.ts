@@ -31,10 +31,10 @@ const getSingleProductBySlug = async (slug: string) => {
 };
 
 const updateSingleProductBySlug = async (
-  slug: string,
+  id: string,
   payload: Partial<IProduct>,
 ) => {
-  const result = await Product.findOneAndUpdate({ slug: slug }, payload, {
+  const result = await Product.findByIdAndUpdate(id, payload, {
     new: true,
   });
   return result;
