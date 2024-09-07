@@ -1,6 +1,8 @@
 import { IProduct } from "./product.interface";
 import slugify from "slugify";
 import { Product } from "./product.schema";
+import AppError from "../../errors/appError";
+import httpStatus from "http-status";
 
 const createProductInDatabase = async (payload: Partial<IProduct>) => {
   const slug = slugify(`${payload.name}${payload.category}` as string, "-");
@@ -12,6 +14,15 @@ const createProductInDatabase = async (payload: Partial<IProduct>) => {
   return result;
 };
 
+const getAllProductsFromDatabase = async() =>{
+  const result = await Product.find();
+  if(result.length===0){
+    throw new AppError(httpStatus.BAD_REQUEST,'Sorry No Product Found')
+  }
+  return result
+}
+
 export const ProductService = {
   createProductInDatabase,
+  getAllProductsFromDatabase
 };
