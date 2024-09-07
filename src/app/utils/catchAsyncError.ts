@@ -1,4 +1,3 @@
-
 import { NextFunction, Request, RequestHandler, Response } from "express";
 
 const catchAsyncErrors = (fn: RequestHandler) => {
