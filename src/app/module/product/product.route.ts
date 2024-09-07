@@ -17,7 +17,7 @@ router.get("/:slug", ProductController.getSingleProductBySlug);
 router.patch(
   "/:slug",
   validateRequest(ProductValidation.updateProductValidationSchema),
-  ProductController.updateSingleProductBySlug,
+  ProductController.updateSingleProduct,
 );
 
 export const ProductRoute = router;

@@ -30,7 +30,7 @@ const getSingleProductBySlug = async (slug: string) => {
   return result;
 };
 
-const updateSingleProductBySlug = async (
+const updateSingleProduct = async (
   id: string,
   payload: Partial<IProduct>,
 ) => {
@@ -44,5 +44,5 @@ export const ProductService = {
   createProductInDatabase,
   getAllProductsFromDatabase,
   getSingleProductBySlug,
-  updateSingleProductBySlug,
+  updateSingleProduct,
 };

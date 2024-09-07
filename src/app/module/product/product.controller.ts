@@ -33,8 +33,8 @@ const getSingleProductBySlug = catchAsyncErrors(async (req, res) => {
   });
 });
 
-const updateSingleProductBySlug = catchAsyncErrors(async (req, res) => {
-  const result = await ProductService.updateSingleProductBySlug(
+const updateSingleProduct = catchAsyncErrors(async (req, res) => {
+  const result = await ProductService.updateSingleProduct(
     req.params.slug,
     req.body,
   );
@@ -50,5 +50,5 @@ export const ProductController = {
   createProduct,
   getAllProduct,
   getSingleProductBySlug,
-  updateSingleProductBySlug,
+  updateSingleProduct,
 };
