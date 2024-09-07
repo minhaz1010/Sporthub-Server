@@ -30,14 +30,16 @@ const getSingleProductBySlug = async (slug: string) => {
   return result;
 };
 
-const updateSingleProduct = async (
-  id: string,
-  payload: Partial<IProduct>,
-) => {
+const updateSingleProduct = async (id: string, payload: Partial<IProduct>) => {
   const result = await Product.findByIdAndUpdate(id, payload, {
     new: true,
   });
   return result;
+};
+
+const deleteSingleProduct = async (id: string) => {
+  await Product.findByIdAndDelete(id);
+  return null;
 };
 
 export const ProductService = {
@@ -45,4 +47,5 @@ export const ProductService = {
   getAllProductsFromDatabase,
   getSingleProductBySlug,
   updateSingleProduct,
+  deleteSingleProduct,
 };

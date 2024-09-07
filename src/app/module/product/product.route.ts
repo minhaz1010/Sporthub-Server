@@ -12,7 +12,9 @@ router.post(
 
 router.get("/", ProductController.getAllProduct);
 
-router.get("/:slug", ProductController.getSingleProductBySlug);
+router.get("/:id", ProductController.getSingleProductBySlug);
+
+router.delete("/:id", ProductController.deleteSingleProduct);
 
 router.patch(
   "/:slug",

@@ -35,7 +35,7 @@ const getSingleProductBySlug = catchAsyncErrors(async (req, res) => {
 
 const updateSingleProduct = catchAsyncErrors(async (req, res) => {
   const result = await ProductService.updateSingleProduct(
-    req.params.slug,
+    req.params.id,
     req.body,
   );
   sendResponse(res, {
@@ -46,9 +46,19 @@ const updateSingleProduct = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const deleteSingleProduct = catchAsyncErrors(async (req, res) => {
+  const result = await ProductService.deleteSingleProduct(req.params.id);
+  sendResponse(res, {
+    success: true,
+    message: "Product Deleted Successfully",
+    result,
+    statusCode: httpStatus.OK,
+  });
+});
 export const ProductController = {
   createProduct,
   getAllProduct,
   getSingleProductBySlug,
   updateSingleProduct,
+  deleteSingleProduct,
 };
