@@ -4,6 +4,9 @@ import { Product } from "./product.schema";
 import AppError from "../../errors/appError";
 import httpStatus from "http-status";
 import QueryBuilder from "../../builder/QueryBuilder";
+import mongoose from "mongoose";
+import { Category } from "../category/category.schema";
+import { ICategory } from "../category/category.interface";
 
 const createProductInDatabase = async (payload: Partial<IProduct>) => {
   const slug = slugify(`${payload.name}${payload.category}` as string, "-");
@@ -11,8 +14,45 @@ const createProductInDatabase = async (payload: Partial<IProduct>) => {
     ...payload,
     slug: slug,
   };
-  const result = await Product.create(updatedProduct);
-  return result;
+  const checkCategoryExistOrNot = await Category.findOne({name:payload.category});
+  const categoryDataFromPayload:ICategory = {
+    name:payload.category as string
+  };
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const productData = await Product.create([updatedProduct], { session });
+    if (productData.length === 0) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Something went wrong to create product",
+      );
+    }
+    if(!checkCategoryExistOrNot){
+      const categoryData = await Category.create([categoryDataFromPayload], {
+        session,
+      });
+      if (categoryData.length === 0) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "Something went wrong to create category",
+        );
+      }
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return productData[0];
+  } catch (error) {
+   console.log(error,'error')
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Something went wrong to create product and category",
+    );
+  }
 };
 
 const getAllProductsFromDatabase = async (query: Record<string, unknown>) => {
