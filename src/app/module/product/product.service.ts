@@ -45,7 +45,6 @@ const createProductInDatabase = async (payload: Partial<IProduct>) => {
 
     return productData[0];
   } catch (error) {
-   console.log(error,'error')
     await session.abortTransaction();
     await session.endSession();
     throw new AppError(
