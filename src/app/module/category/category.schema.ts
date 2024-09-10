@@ -1,12 +1,13 @@
-import { model, Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 import { ICategory } from "./category.interface";
 
-const categorySchema = new Schema<ICategory>(
+const CategorySchema = new Schema<ICategory>(
   {
     name: {
       type: String,
       required: true,
-      unique: true,
+      trim: true,
+      unique:true
     },
   },
   {
@@ -14,4 +15,4 @@ const categorySchema = new Schema<ICategory>(
   },
 );
 
-export const Category = model<ICategory>("Category", categorySchema);
+export const Category = model<ICategory>("Category", CategorySchema);
