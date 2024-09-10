@@ -9,9 +9,9 @@ const modularRouter = [
     route: ProductRoute,
   },
   {
-    path:"/category",
-    route:CategoryRoutes
-  }
+    path: "/category",
+    route: CategoryRoutes,
+  },
 ];
 
 modularRouter.forEach((route) => router.use(route.path, route.route));
