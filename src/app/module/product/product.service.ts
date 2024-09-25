@@ -3,10 +3,11 @@ import slugify from "slugify";
 import { Product } from "./product.schema";
 import AppError from "../../errors/appError";
 import httpStatus from "http-status";
-import QueryBuilder from "../../builder/QueryBuilder";
 import mongoose from "mongoose";
 import { Category } from "../category/category.schema";
 import { ICategory } from "../category/category.interface";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { IQueryParams } from "../../interface";
 
 const createProductInDatabase = async (payload: Partial<IProduct>) => {
   const slug = slugify(`${payload.name}${payload.category}` as string, "-");
@@ -14,9 +15,11 @@ const createProductInDatabase = async (payload: Partial<IProduct>) => {
     ...payload,
     slug: slug,
   };
-  const checkCategoryExistOrNot = await Category.findOne({name:payload.category});
-  const categoryDataFromPayload:ICategory = {
-    name:payload.category as string
+  const checkCategoryExistOrNot = await Category.findOne({
+    name: payload.category,
+  });
+  const categoryDataFromPayload: ICategory = {
+    name: payload.category as string,
   };
   const session = await mongoose.startSession();
   try {
@@ -28,7 +31,7 @@ const createProductInDatabase = async (payload: Partial<IProduct>) => {
         "Something went wrong to create product",
       );
     }
-    if(!checkCategoryExistOrNot){
+    if (!checkCategoryExistOrNot) {
       const categoryData = await Category.create([categoryDataFromPayload], {
         session,
       });
@@ -55,6 +58,7 @@ const createProductInDatabase = async (payload: Partial<IProduct>) => {
 };
 
 const getAllProductsFromDatabase = async (query: Record<string, unknown>) => {
+  const totalItem = await Product.find().countDocuments();
   const productQuery = new QueryBuilder(Product.find(), query)
     .search(["name"])
     .filter()
@@ -66,7 +70,77 @@ const getAllProductsFromDatabase = async (query: Record<string, unknown>) => {
   if (result.length === 0) {
     throw new AppError(httpStatus.BAD_REQUEST, " No Product Found");
   }
-  return result;
+  return {
+    totalItem,
+    result,
+  };
+};
+
+const getAllProductsFromDatabaseWithQuery = async (query: IQueryParams) => {
+  const {
+    rating,
+    minPrice,
+    maxPrice,
+    brand,
+    category,
+    page = 1,
+    limit = 10,
+    search,
+    sort = "price",
+  } = query;
+
+  let productQuery = Product.find();
+
+  if (search) {
+    const searchRegex = new RegExp(search, "i");
+    productQuery = productQuery.or([
+      { name: searchRegex },
+      { description: searchRegex },
+      { brand: searchRegex },
+    ]);
+  }
+
+  if (category) {
+    productQuery = productQuery.where("category").equals(category);
+  }
+
+  if (rating) {
+    if (rating == 1) {
+      productQuery = productQuery.where("rating").gte(rating).lte(2);
+    }
+    if (rating == 2) {
+      productQuery = productQuery.where("rating").gte(rating).lte(3);
+    }
+    if (rating == 3) {
+      productQuery = productQuery.where("rating").gte(rating).lte(4);
+    }
+    if (rating == 4) {
+      productQuery = productQuery.where("rating").gte(rating).lte(5);
+    }
+  }
+  if (minPrice) {
+    productQuery = productQuery.where("price").gte(minPrice);
+  }
+  if (maxPrice) {
+    productQuery = productQuery.where("price").lte(maxPrice);
+  }
+  if (brand) {
+    productQuery = productQuery.where("brand").equals(brand);
+  }
+
+  if (category) {
+    productQuery = productQuery.where("category").equals(category);
+  }
+
+  const total = await Product.countDocuments();
+
+  const products = await productQuery
+    .sort(sort)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .exec();
+
+  return { products, total };
 };
 
 const getSingleProductBySlug = async (slug: string) => {
@@ -95,4 +169,5 @@ export const ProductService = {
   getSingleProductBySlug,
   updateSingleProduct,
   deleteSingleProduct,
+  getAllProductsFromDatabaseWithQuery,
 };

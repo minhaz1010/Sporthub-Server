@@ -14,11 +14,13 @@ const createProduct = catchAsyncErrors(async (req, res) => {
 });
 
 const getAllProduct = catchAsyncErrors(async (req, res) => {
-  const result = await ProductService.getAllProductsFromDatabase(req.query);
+  const { products, total } =
+    await ProductService.getAllProductsFromDatabaseWithQuery(req.query);
   sendResponse(res, {
+    length: total,
     success: true,
     message: "Product Retrieved Successfully",
-    result,
+    result: products,
     statusCode: httpStatus.OK,
   });
 });

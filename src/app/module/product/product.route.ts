@@ -12,12 +12,12 @@ router.post(
 
 router.get("/", ProductController.getAllProduct);
 
-router.get("/:id", ProductController.getSingleProductBySlug);
+router.get("/:slug", ProductController.getSingleProductBySlug);
 
 router.delete("/:id", ProductController.deleteSingleProduct);
 
 router.patch(
-  "/:slug",
+  "/:id",
   validateRequest(ProductValidation.updateProductValidationSchema),
   ProductController.updateSingleProduct,
 );
