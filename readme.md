@@ -56,7 +56,7 @@ This project is a backend service for a single-page product creation about sport
 - `PATCH /api/products/:id`: Update a product
 - `DELETE /api/products/:id`: Delete a product
 
-## Custom Query Builder
+##Query Builder
 
 The custom query builder allows for flexible searching and filtering of products. You can use it by sending GET requests to `/api/products` with query parameters.
 
